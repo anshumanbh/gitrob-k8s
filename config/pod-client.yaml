@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: gitrob
+    component: client
+  name: gitrob-client-pod
+spec:
+  containers:
+  - name: gitrob-client
+    image: <client-image>
+    env:
+    - name: target
+      value: "<target>"
+  restartPolicy: OnFailure

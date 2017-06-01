@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: gitrob
+    component: server
+  name: gitrob-server-pod
+spec:
+  containers:
+  - name: gitrob-server
+    image: <server-image>
+    ports:
+    - containerPort: 9393
+  - name: gitrob-pgdb
+    image: postgres
+    imagePullPolicy: IfNotPresent
+    ports:
+    - containerPort: 5432
+    env:
+    - name: POSTGRES_USER
+      value: "gitrob"
+    - name: POSTGRES_PASSWORD
+      value: "gitrob"
+  restartPolicy: OnFailure
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: gitrob
+    component: server
+  name: gitrob-service
+spec:
+  ports:
+    - port: 9393
+      targetPort: 9393
+      protocol: TCP
+      name: gitrob-server
+    - port: 5432
+      targetPort: 5432
+      protocol: TCP
+      name: gitrob-db
+  selector:
+    app: gitrob
+    component: server
+  type: LoadBalancer
